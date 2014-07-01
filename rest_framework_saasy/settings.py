@@ -9,6 +9,8 @@ REST_SETTINGS = getattr(settings, 'REST_FRAMEWORK', None)
 
 SAAS_SETTINGS = REST_SETTINGS.get('SAAS')
 
-CLIENT_MODEL = import_from_string(SAAS_SETTINGS.get('CLIENT_MODEL'),
-                                  'CLIENT_MODEL'
+CLIENT_MODEL = import_from_string(SAAS_SETTINGS.get('MODEL'),
+                                  'MODEL'
                                   )
+
+CLIENT_MODULE_PATH = SAAS_SETTINGS.get('MODULE')

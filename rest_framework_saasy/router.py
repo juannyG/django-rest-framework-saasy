@@ -1,8 +1,8 @@
 """
 SaaS Router customizations
 """
-from .settings import CLIENT_MODEL
 from rest_framework import routers
+from rest_framework_saasy.settings import CLIENT_MODEL
 
 
 CLIENT_URL_PARAM = CLIENT_MODEL.Meta.saas_url_param
