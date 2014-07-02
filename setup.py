@@ -34,7 +34,6 @@ class TestCommand(Command):
                      ])
                 )
 
-        print testfiles
         tests = TestLoader().loadTestsFromNames(testfiles)
         t_runner = TextTestRunner(verbosity=1)
         t_runner.run(tests)
