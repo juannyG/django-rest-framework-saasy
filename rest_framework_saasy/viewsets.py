@@ -4,7 +4,10 @@ import traceback
 from django.http import Http404
 from django.utils.decorators import classonlymethod
 from functools import update_wrapper
-from rest_framework_saasy.settings import CLIENT_MODEL, CLIENT_MODULE_PATH
+from rest_framework_saasy.settings import (MODULE_PREFIX,
+                                           CLIENT_MODEL,
+                                           CLIENT_MODULE_PATH
+                                           )
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +55,8 @@ class ViewSetMixin(object):
                                              saas_url_parameter,
                                              '.'.join(mod_packages)
                                              )
+                if MODULE_PREFIX:
+                    cls_path = cls_path.replace(MODULE_PREFIX, '')
 
                 try:
                     merchant_cls_mod = importlib.import_module(cls_path)
