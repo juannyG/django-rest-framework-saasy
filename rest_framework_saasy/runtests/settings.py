@@ -119,3 +119,5 @@ import django
 
 if django.VERSION < (1, 3):
     INSTALLED_APPS += ('staticfiles',)
+
+REST_FRAMEWORK = {}
