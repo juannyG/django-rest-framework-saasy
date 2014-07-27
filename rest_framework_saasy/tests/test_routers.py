@@ -1,6 +1,7 @@
 """SaaS router test suite"""
 SAAS_CLIENT_MODEL = 'rest_framework_saasy.tests.test_routers.ClientModel'
 SAAS_CLIENT_MODULE = 'rest_framework_saasy.tests.client'
+SAAS_CLIENT_URL_PARAM = 'name'
 
 import django.db.models.options as options
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + ('saas_url_param',)
@@ -19,18 +20,18 @@ class ClientModel(models.Model):
 
     class Meta:
         """SaaS URL parameter defintion"""
-        saas_url_param = 'name'
+        saas_url_param = SAAS_CLIENT_URL_PARAM
 
 import unittest
 from rest_framework import viewsets
 from rest_framework.decorators import link, action
 from rest_framework.compat import patterns
 from rest_framework.response import Response
-from rest_framework.test import APIRequestFactory
+# from rest_framework.test import APIRequestFactory
 from rest_framework_saasy import routers
 from rest_framework_saasy import viewsets as saas_viewsets
 
-factory = APIRequestFactory()
+# factory = APIRequestFactory()
 
 urlpatterns = patterns('',)
 
@@ -67,14 +68,21 @@ class TestSimpleRouter(unittest.TestCase):
         self.router = routers.SimpleRouter()
 
     def test_link_and_action_decorator(self):
+        """Test client link & action decorator routing"""
+        endpoints = ['action1', 'action2', 'action3', 'link1', 'link2']
         routes = self.router.get_routes(BasicViewSet)
         decorator_routes = routes[9:]
+
         # Make sure all these endpoints exist and none have been clobbered
-        for i, endpoint in enumerate(['action1', 'action2', 'action3', 'link1', 'link2']):
+        for i, endpoint in enumerate(endpoints):
             client_route = decorator_routes[i]
             # check url listing
             self.assertEqual(client_route.url,
-                             '^(?P<name>\\w+)/{{prefix}}/{{lookup}}/{0}{{trailing_slash}}$'.format(endpoint))
+                             '^(?P<{}>\\w+)/'.format(SAAS_CLIENT_URL_PARAM) +
+                             '{prefix}/' +
+                             '{lookup}/' +
+                             '{}{{trailing_slash}}$'.format(endpoint)
+                             )
             # check method to function mapping
             if endpoint == 'action3':
                 methods_map = ['post', 'delete']
