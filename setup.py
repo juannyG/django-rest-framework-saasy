@@ -14,5 +14,6 @@ setup(
     install_requires=[
         "Django>=1.3",
         "djangorestframework>=2.3.14",
+        "simplejson>=3.6.0",
     ]
 )

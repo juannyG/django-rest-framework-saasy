@@ -41,10 +41,13 @@ def main():
     else:
         print(usage())
         sys.exit(1)
+
     test_module_name = 'rest_framework_saasy.tests'
     if django.VERSION[0] == 1 and django.VERSION[1] < 6:
         test_module_name = 'tests'
 
+    if sys.argv[0] == 'setup.py':
+        test_case = ''
     failures = test_runner.run_tests([test_module_name + test_case])
 
     sys.exit(failures)
