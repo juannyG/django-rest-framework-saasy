@@ -1,11 +1,11 @@
 import importlib
 import logging
 import traceback
+from collections import Counter
 from django.http import Http404
 from django.utils.decorators import classonlymethod
 from functools import update_wrapper
-from rest_framework_saasy.settings import (MODULE_PREFIX,
-                                           CLIENT_MODEL,
+from rest_framework_saasy.settings import (CLIENT_MODEL,
                                            CLIENT_MODULE_PATH
                                            )
 
@@ -45,18 +45,21 @@ class ViewSetMixin(object):
         def _retrieve_cls(saas_url_parameter):
             """SaaS magic - determine custom viewset class or default"""
             if saas_url_parameter:
-                client_filter = {CLIENT_MODEL.Meta.saas_lookup_field: saas_url_parameter}
+                client_filter = {CLIENT_MODEL._meta.saas_lookup_field: saas_url_parameter}
                 if not CLIENT_MODEL.objects.filter(**client_filter).exists():
                     raise Exception("Client {} does not exist".format(saas_url_parameter))
 
-                mod_packages = cls.__module__.split('.')[3:]
+                mod_packages = cls.__module__.split('.')
+                client_mod = CLIENT_MODULE_PATH.split('.')
+                a = Counter(mod_packages)
+                b = Counter(client_mod)
+                mod_packages = list((a-b).elements())
+
                 cls_name = cls.__name__
                 cls_path = '{}.{}.{}'.format(CLIENT_MODULE_PATH,
                                              saas_url_parameter,
                                              '.'.join(mod_packages)
                                              )
-                if MODULE_PREFIX:
-                    cls_path = cls_path.replace(MODULE_PREFIX, '')
 
                 try:
                     merchant_cls_mod = importlib.import_module(cls_path)
@@ -73,9 +76,9 @@ class ViewSetMixin(object):
 
         def view(request, *args, **kwargs):
             """Slightly modified rest_framework as_view magic..."""
-            saas_url_parameter = kwargs.get(CLIENT_MODEL.Meta.saas_url_param)
+            saas_url_parameter = kwargs.get(CLIENT_MODEL._meta.saas_url_param)
             self = _retrieve_cls(saas_url_parameter)
-            setattr(self, CLIENT_MODEL.Meta.saas_lookup_field, saas_url_parameter)
+            setattr(self, CLIENT_MODEL._meta.saas_lookup_field, saas_url_parameter)
 
             # We also store the mapping of request methods to actions,
             # so that we can later set the action attribute.
