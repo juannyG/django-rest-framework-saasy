@@ -74,7 +74,7 @@ class TestSimpleRouter(TestCase):
             client_route = decorator_routes[i]
             # check url listing
             self.assertEqual(client_route.url,
-                             '^(?P<{}>\\w+)/'.format(saas_url_param) +
+                             '^(?P<{}>.*)/'.format(saas_url_param) +
                              '{prefix}/' +
                              '{lookup}/' +
                              '{}{{trailing_slash}}$'.format(endpoint)
@@ -106,7 +106,7 @@ class TestSaaSRouting(TestCase):
     urls = 'rest_framework_saasy.tests.test_routers'
 
     def setUp(self):
-        ClientModel.objects.create(name='foo')
+        ClientModel.objects.create(name='foo_bar-123')
         ClientModel.objects.create(name='bar')
         RouterTestModel.objects.create(uuid='123', text='foo bar')
         self.register()
@@ -128,7 +128,7 @@ class TestSaaSRouting(TestCase):
             "text": "foo bar"
             }
 
-        core_response = self.client.get('/foo/notes/1/')
+        core_response = self.client.get('/foo_bar-123/notes/1/')
         self.assertEqual(simplejson.loads(core_response.content),
                          expected_response
                          )
@@ -139,7 +139,7 @@ class TestSaaSRouting(TestCase):
                          )
 
     def test_client_override(self):
-        custom_response = self.client.get('/foo/notes/')
+        custom_response = self.client.get('/foo_bar-123/notes/')
         self.assertEqual(simplejson.loads(custom_response.content), {
             "method": "list",
             "custom": True
@@ -153,9 +153,10 @@ class TestSaaSRouting(TestCase):
                           )
 
     def test_404(self):
-        response = self.client.get('/foo/baz/')
+        response = self.client.get('/foo_bar-123/baz/')
         self.assertEqual(response.status_code, 404)
+
     # Can't do this yet...
     # def test_client_link(self):
-    #     client_link = self.client.get('/foo/notes/1/test_link/')
+    #     client_link = self.client.get('/foo_bar-123/notes/1/test_link/')
     #     print client_link

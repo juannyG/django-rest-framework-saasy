@@ -5,7 +5,7 @@ from rest_framework import routers
 from rest_framework_saasy.settings import CLIENT_MODEL
 
 CLIENT_URL_PARAM = CLIENT_MODEL._meta.saas_url_param if CLIENT_MODEL else None
-CLIENT_URL_REGEX = '(?P<{0}>\w+)'.format(CLIENT_URL_PARAM) \
+CLIENT_URL_REGEX = '(?P<{}>.*)'.format(CLIENT_URL_PARAM) \
     if CLIENT_URL_PARAM else None
 
 LIST_ROUTE_ARGS = {
