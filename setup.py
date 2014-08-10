@@ -4,10 +4,9 @@ Setup file for DjangoRestFrameworkSaasy
 from setuptools import setup
 
 setup(
-#    cmdclass={'test': TestCommand},
     name='DjangoRestFrameworkSaasy',
     version='0.1dev',
-    packages=[],
+    packages=['rest_framework_saasy'],
     license='Creative Commons Attribution-Noncommercial-Share Alike license',
     description="SaaS plugin for the django rest framework",
     test_suite='rest_framework_saasy.runtests.runtests.main',
