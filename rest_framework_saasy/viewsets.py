@@ -1,13 +1,11 @@
 import importlib
 import logging
 import traceback
-from collections import Counter
 from django.http import Http404
 from django.utils.decorators import classonlymethod
 from functools import update_wrapper
-from rest_framework_saasy.settings import (CLIENT_MODEL,
-                                           CLIENT_MODULE_PATH
-                                           )
+from rest_framework_saasy.settings import SAAS_MODEL
+from rest_framework_saasy.routers import SAAS_URL_KW
 
 logger = logging.getLogger(__name__)
 
@@ -42,24 +40,23 @@ class ViewSetMixin(object):
                 raise TypeError("%s() received an invalid keyword %r" % (
                     cls.__name__, key))
 
-        def _retrieve_cls(saas_url_parameter):
+        def _retrieve_cls(saas_url_kw):
             """SaaS magic - determine custom viewset class or default"""
-            if saas_url_parameter:
-                client_filter = {CLIENT_MODEL._meta.saas_lookup_field: saas_url_parameter}
-                if not CLIENT_MODEL.objects.filter(**client_filter).exists():
-                    raise Exception("Client {} does not exist".format(saas_url_parameter))
+            if saas_url_kw:
+                client_filter = {SAAS_MODEL.saas_lookup_field(): saas_url_kw}
+                if not SAAS_MODEL.objects.filter(**client_filter).exists():
+                    raise Exception("Client {} does not exist".format(saas_url_kw))
 
+                saas_client = SAAS_MODEL.objects.get(**client_filter)
+                client_package = saas_client.saas_client_package(saas_url_kw)
                 mod_packages = cls.__module__.split('.')
-                client_mod = CLIENT_MODULE_PATH.split('.')
-                a = Counter(mod_packages)
-                b = Counter(client_mod)
-                mod_packages = list((a-b).elements())
+                if hasattr(cls, 'saas_module'):
+                    mod_packages = cls.saas_module().split('.')
 
                 cls_name = cls.__name__
-                cls_path = '{}.{}.{}'.format(CLIENT_MODULE_PATH,
-                                             saas_url_parameter,
-                                             '.'.join(mod_packages)
-                                             )
+                cls_path = '{}.{}'.format(client_package,
+                                          '.'.join(mod_packages)
+                                          )
 
                 try:
                     merchant_cls_mod = importlib.import_module(cls_path)
@@ -76,9 +73,9 @@ class ViewSetMixin(object):
 
         def view(request, *args, **kwargs):
             """Slightly modified rest_framework as_view magic..."""
-            saas_url_parameter = kwargs.get(CLIENT_MODEL._meta.saas_url_param)
-            self = _retrieve_cls(saas_url_parameter)
-            setattr(self, CLIENT_MODEL._meta.saas_lookup_field, saas_url_parameter)
+            saas_url_kw = kwargs.get(SAAS_URL_KW)
+            self = _retrieve_cls(saas_url_kw)
+            setattr(self, SAAS_URL_KW, saas_url_kw)
 
             # We also store the mapping of request methods to actions,
             # so that we can later set the action attribute.

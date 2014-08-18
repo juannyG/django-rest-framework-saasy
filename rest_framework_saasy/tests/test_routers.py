@@ -1,17 +1,9 @@
 """SaaS router test suite"""
 SAAS_CLIENT_MODEL = 'rest_framework_saasy.tests.models.ClientModel'
-SAAS_CLIENT_MODULE = 'rest_framework_saasy.tests'
-
-import django.db.models.options as options
-options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
-    'saas_url_param',
-    'saas_lookup_field',
-    )
 
 from django.conf import settings
 settings.REST_FRAMEWORK['SAAS'] = {
     'MODEL': SAAS_CLIENT_MODEL,
-    'MODULE': SAAS_CLIENT_MODULE
     }
 
 
@@ -69,12 +61,11 @@ class TestSimpleRouter(TestCase):
         decorator_routes = routes[9:]
 
         # Make sure all these endpoints exist and none have been clobbered
-        saas_url_param = ClientModel._meta.saas_url_param
         for i, endpoint in enumerate(endpoints):
             client_route = decorator_routes[i]
             # check url listing
             self.assertEqual(client_route.url,
-                             '^(?P<{}>.*)/'.format(saas_url_param) +
+                             '^(?P<{}>.*)/'.format(routers.SAAS_URL_KW) +
                              '{prefix}/' +
                              '{lookup}/' +
                              '{}{{trailing_slash}}$'.format(endpoint)
@@ -99,6 +90,10 @@ class NoteSerializer(serializers.HyperlinkedModelSerializer):
 class NoteViewSet(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
     queryset = RouterTestModel.objects.all()
     serializer_class = NoteSerializer
+
+    @staticmethod
+    def saas_module():
+        return 'test_routers'
 
 
 class TestSaaSRouting(TestCase):

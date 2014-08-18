@@ -2,11 +2,9 @@
 SaaS Router customizations
 """
 from rest_framework import routers
-from rest_framework_saasy.settings import CLIENT_MODEL
 
-CLIENT_URL_PARAM = CLIENT_MODEL._meta.saas_url_param if CLIENT_MODEL else None
-CLIENT_URL_REGEX = '(?P<{}>.*)'.format(CLIENT_URL_PARAM) \
-    if CLIENT_URL_PARAM else None
+SAAS_URL_KW = "saas_url_kw"
+_SAAS_URL_REGEX = "(?P<{}>.*)".format(SAAS_URL_KW)
 
 LIST_ROUTE_ARGS = {
     'mapping': {'get': 'list', 'post': 'create'},
@@ -52,15 +50,15 @@ class SimpleRouter(routers.SimpleRouter):
         ),
         # Client specific routes...
         routers.Route(
-            url=r'^{0}/{{prefix}}{{trailing_slash}}$'.format(CLIENT_URL_REGEX),
+            url=r'^{0}/{{prefix}}{{trailing_slash}}$'.format(_SAAS_URL_REGEX),
             **LIST_ROUTE_ARGS
         ),
         routers.Route(
-            url=r'^{0}/{{prefix}}/{{lookup}}{{trailing_slash}}$'.format(CLIENT_URL_REGEX),
+            url=r'^{0}/{{prefix}}/{{lookup}}{{trailing_slash}}$'.format(_SAAS_URL_REGEX),
             **DETAIL_ROUTE_ARGS
         ),
         routers.Route(
-            url=r'^{0}/{{prefix}}/{{lookup}}/{{methodname}}{{trailing_slash}}$'.format(CLIENT_URL_REGEX),
+            url=r'^{0}/{{prefix}}/{{lookup}}/{{methodname}}{{trailing_slash}}$'.format(_SAAS_URL_REGEX),
             **METHOD_ROUTE_ARGS
         )
     ]

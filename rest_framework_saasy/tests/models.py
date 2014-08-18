@@ -1,16 +1,18 @@
 """Model for tests cases"""
 from django.db import models
-SAAS_CLIENT_URL_PARAM = 'name'
 
 
 class ClientModel(models.Model):
     """Test client model"""
     name = models.CharField(max_length=128)
 
-    class Meta:
-        """SaaS URL parameter defintion"""
-        saas_url_param = SAAS_CLIENT_URL_PARAM
-        saas_lookup_field = SAAS_CLIENT_URL_PARAM
+    @staticmethod
+    def saas_lookup_field():
+        """DRF-SaaS lookup field definition"""
+        return 'name'
+
+    def saas_client_package(self, saas_url_kw):
+        return 'rest_framework_saasy.tests.{}'.format(self.name)
 
 
 class RouterTestModel(models.Model):
