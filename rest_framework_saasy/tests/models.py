@@ -11,7 +11,7 @@ class ClientModel(models.Model):
         """DRF-SaaS lookup field definition"""
         return 'name'
 
-    def saas_client_package(self, saas_url_kw):
+    def saas_client_module(self, saas_url_kw):
         return 'rest_framework_saasy.tests.{}'.format(self.name)
 
 

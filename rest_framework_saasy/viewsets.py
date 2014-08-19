@@ -40,26 +40,23 @@ class ViewSetMixin(object):
                 raise TypeError("%s() received an invalid keyword %r" % (
                     cls.__name__, key))
 
-        def _retrieve_cls(saas_url_kw):
+        def _get_cls(saas_url_kw):
             """SaaS magic - determine custom viewset class or default"""
             if saas_url_kw:
                 client_filter = {SAAS_MODEL.saas_lookup_field(): saas_url_kw}
                 if not SAAS_MODEL.objects.filter(**client_filter).exists():
                     raise Exception("Client {} does not exist".format(saas_url_kw))
+                cls_name = cls.__name__
+                cls_module = cls.__module__
 
                 saas_client = SAAS_MODEL.objects.get(**client_filter)
-                client_package = saas_client.saas_client_package(saas_url_kw)
-                mod_packages = cls.__module__.split('.')
+                client_module = saas_client.saas_client_module(saas_url_kw)
                 if hasattr(cls, 'saas_module'):
-                    mod_packages = cls.saas_module().split('.')
+                    cls_module = cls.saas_module()
 
-                cls_name = cls.__name__
-                cls_path = '{}.{}'.format(client_package,
-                                          '.'.join(mod_packages)
-                                          )
-
+                merchant_cls_module = '{}.{}'.format(client_module, cls_module)
                 try:
-                    merchant_cls_mod = importlib.import_module(cls_path)
+                    merchant_cls_mod = importlib.import_module(merchant_cls_module)
                     merchant_cls = getattr(merchant_cls_mod, cls_name)
                     return merchant_cls(**initkwargs)
                 except ImportError:
@@ -74,7 +71,7 @@ class ViewSetMixin(object):
         def view(request, *args, **kwargs):
             """Slightly modified rest_framework as_view magic..."""
             saas_url_kw = kwargs.get(SAAS_URL_KW)
-            self = _retrieve_cls(saas_url_kw)
+            self = _get_cls(saas_url_kw)
             setattr(self, SAAS_URL_KW, saas_url_kw)
 
             # We also store the mapping of request methods to actions,

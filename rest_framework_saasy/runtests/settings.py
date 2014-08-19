@@ -122,3 +122,26 @@ if django.VERSION < (1, 3):
     INSTALLED_APPS += ('staticfiles',)
 
 REST_FRAMEWORK = {}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+   'loggers': {
+        'rest_framework_saasy': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
