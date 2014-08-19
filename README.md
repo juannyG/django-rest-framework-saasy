@@ -4,9 +4,21 @@ django-rest-framework-saasy
 #### Overview
 
 #### Install
-- pip install djangorestframework-saasy
+```pip install djangorestframework-saasy```
 
 #### How to use
+
+```
+project
+├── customizations
+│   └──client
+│       └── app
+│           └── subpackage
+│               └── module.py
+└── app
+    └── subpackage 
+        └── module.py
+```
 
 License
 =======
