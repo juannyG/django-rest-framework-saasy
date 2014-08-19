@@ -1,3 +1,13 @@
+django-rest-framework-saasy
+===========================
+
+#### Overview
+
+#### Install
+- pip install djangorestframework-saasy
+
+#### How to use
+
 License
 =======
 The MIT License (MIT)
