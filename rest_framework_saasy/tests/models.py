@@ -1,8 +1,9 @@
 """Model for tests cases"""
 from django.db import models
+from rest_framework_saasy.client import ClientMixin
 
 
-class ClientModel(models.Model):
+class ClientModel(models.Model, ClientMixin):
     """Test client model"""
     name = models.CharField(max_length=128)
 
