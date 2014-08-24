@@ -105,3 +105,8 @@ class ViewSetMixin(object):
         view.cls = cls
         view.suffix = initkwargs.get('suffix', None)
         return view
+
+    def saas_module(self, *args, **kwargs):
+        """Optional method to define package definition to be used
+        as a subpackage reference to the client custom package"""
+        pass
