@@ -23,6 +23,5 @@ class ClientMixin(object):
         raise NotImplementedError
 
     def saas_client_module(self, saas_url_kw, *args, **kwargs):
-        """Optional method to define module path of core viewset in the
-        client customization path"""
-        pass
+        """Define module path to client customization"""
+        raise NotImplementedError
