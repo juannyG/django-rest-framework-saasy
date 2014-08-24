@@ -68,15 +68,15 @@ class ClientModel(models.Model, ClientMixin):
   any kind of path rules you wish.
 
   ```
-project
-├── customizations
-│   └── client_name
-│       └── app
-│           └── subpackage
-│               └── module.py
-└── app
-    └── subpackage 
-        └── module.py
+  project
+  ├── customizations
+  │   └── client_name
+  │       └── app
+  │           └── subpackage
+  │               └── module.py
+  └── app
+      └── subpackage 
+          └── module.py
   ```
 
 #### ViewSets
@@ -119,15 +119,15 @@ core must be defined identically in the client custom module.
   By default, viewset will be routed in a similar way as in the diagram above:
   
   ```
-project
-├── customizations
-│   └── client_name
-│       └── app
-│           └── subpackage
-│               └── module.py
-└── app
-    └── subpackage 
-        └── module.py
+  project
+  ├── customizations
+  │   └── client_name
+  │       └── app
+  │           └── subpackage
+  │               └── module.py
+  └── app
+      └── subpackage 
+          └── module.py
   ```
   
   However, the SaaS viewset has an optional method that can be defined, *saas_module*
@@ -145,15 +145,15 @@ project
   The expected file system package defintion for *WebService* customizations would be:
   
   ```
-project
-├── customizations
-│   └── client_name
-│       └── other
-│           └── package
-│               └── name.py
-└── app
-    └── subpackage 
-        └── module.py
+  project
+  ├── customizations
+  │   └── client_name
+  │       └── other
+  │           └── package
+  │               └── name.py
+  └── app
+      └── subpackage 
+          └── module.py
   ```
 
 License
