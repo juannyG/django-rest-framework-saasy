@@ -30,7 +30,7 @@ REST_SETTINGS = {
 }
 ```
 
-Then use the saas client mixin provided by the SaaS plugin, and define the provided class methods:
+Use the saas client mixin provided by the SaaS plugin, and define the required class methods:
 ```python
 from django.db import models
 from rest_framework_saasy.client import ClientMixin
@@ -45,8 +45,8 @@ class ClientModel(models.Model, ClientMixin):
         """DRF-SaaS lookup field definition"""
         return 'name'
 
-    def saas_client_module(self, saas_url_kw):
-        return 'path.to.customizations.{}'.format(self.name)
+    def saas_client_module(self, saas_url_kw, *args, **kwargs):
+        return 'customizations.{}'.format(self.name)
 ```
 
 ##### ClientMixin methods
@@ -56,34 +56,34 @@ class ClientModel(models.Model, ClientMixin):
   This method defines what field in your client model to use when looking up
   the client in the database, to verify they exist.
 
-  You must define this method in your model, otherwise a NotImplemented
-  exception will be raised when the SaaS plugin viewset attempts to
-  use the model class to determine how to lookup the client resource.
+- *saas_client_module* **[required]**
 
-- *saas_client_module* **[optional]**
+  Parameters:
+  - *saas_url_kw* - [string] - value from URL key word argument - the client
+  idenfitication value.
 
   All client code should be separated from the core and also from each other.
-  A good practice to follow is that there is an folder for all client specific code,
+  A good practice to follow is that there is a folder for all client specific code,
   separate from the core, with a folder for each client. That said, you can impose
   any kind of path rules you wish.
 
-#### ViewSets
-The separation of core vs client can be depicted with the following diagram:
-
-```
+  ```
 project
 ├── customizations
-│   └──client
+│   └── client_name
 │       └── app
 │           └── subpackage
 │               └── module.py
 └── app
     └── subpackage 
         └── module.py
-```
+  ```
 
-The idea is there is a core web service ViewSet, *WebService*, defined in **app.subpackage.module**
-and in **customizations.client.app.subpackage.module** where there is also a class named *WebService*
+#### ViewSets
+
+The idea is there is a core web service ViewSet, *WebService*, defined 
+in **app.subpackage.module** and in **customizations.client_name.app.subpackage.module** 
+where there is also a class named *WebService*
 
 **app.subpackage.module**
 ```python
@@ -111,6 +111,50 @@ path for the ViewSet mixed with the *saas_viewsets.ViewSetMixin*.
 
 What cannot be customized is the name of the class - the class name *WebService* in the
 core must be defined identically in the client custom module.
+
+##### ViewSetMixin methods
+
+- *saas_module* **[optional]**
+
+  By default, viewset will be routed in a similar way as in the diagram above:
+  
+  ```
+project
+├── customizations
+│   └── client_name
+│       └── app
+│           └── subpackage
+│               └── module.py
+└── app
+    └── subpackage 
+        └── module.py
+  ```
+  
+  However, the SaaS viewset has an optional method that can be defined, *saas_module*
+  This returns the path that should be used in the client package. Let's slightly alter
+  our *WebService* example above:
+  
+  ```python
+  class WebService(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
+      ...
+      @staticmethod
+      def saas_module():
+          return 'other.package.name'
+  ```
+  
+  The expected file system package defintion for *WebService* customizations would be:
+  
+  ```
+project
+├── customizations
+│   └── client_name
+│       └── other
+│           └── package
+│               └── name.py
+└── app
+    └── subpackage 
+        └── module.py
+  ```
 
 License
 =======
