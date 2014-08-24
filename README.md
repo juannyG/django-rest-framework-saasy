@@ -3,6 +3,11 @@ django-rest-framework-saasy
 
 #### Overview
 
+This is a SaaS driven plugin for Django REST Framework. It offers a simple way
+to separate client customizations for your core API web services. Currently, this
+initial version only supports client API routing via ViewSets in conjunction with
+an extension of the Django REST Framework SimpleRouter. 
+
 #### Install
 ```pip install djangorestframework-saasy```
 
@@ -13,6 +18,7 @@ class ClientMixin(object):
     """
     To be mixed with the relevant model associated with a "customer" of
     your platform/service(s) - the settings value of:
+    
     REST_SETTINGS = {
         ...
         "SAAS": {
@@ -31,8 +37,7 @@ class ClientMixin(object):
         raise NotImplementedError
 
     def saas_client_module(self, saas_url_kw, *args, **kwargs):
-        """Optional method to define module path of core viewset in the
-        client customization path"""
+        """Optional method to define client module path"""
         pass
 ```
 
