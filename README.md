@@ -66,7 +66,7 @@ class ClientModel(models.Model, ClientMixin):
   A good practice to follow is that there is a folder for all client specific code,
   separate from the core, with a folder for each client. That said, you can impose
   any kind of path rules you wish.
-
+  
   ```
   project
   ├── customizations
@@ -131,8 +131,8 @@ core must be defined identically in the client custom module.
   ```
   
   However, the SaaS viewset has an optional method that can be defined, *saas_module*
-  This returns the path that should be used in the client package. Let's slightly alter
-  our *WebService* example above:
+  This returns the path that should be used in the client package. **It must be 
+  defined with the staticmethod decorator.** Let's slightly alter our *WebService* example above:
   
   ```python
   class WebService(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
@@ -155,6 +155,13 @@ core must be defined identically in the client custom module.
       └── subpackage 
           └── module.py
   ```
+
+##### ViewSet attributes
+
+*saas_url_kw* is a new attribute made available to the ViewSet instance. 
+The value of the valid identifier from the URL key word argument can be 
+accessed at any time. If no client specific route was used, *saas_url_kw*
+defaults to None.
 
 License
 =======
