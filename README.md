@@ -186,6 +186,10 @@ Client specific routes will be made available immediately:
 ^(?P<saas_url_kw>.*)/notes/(?P<pk>[^/]+)/$ [name='note-detail']
 ```
 
+**Note:** If a client key word argument is provided, but the client cannot
+be retreived from the database with the given identifier, the
+plugin will simply return a 404.
+
 License
 =======
 The MIT License (MIT)
