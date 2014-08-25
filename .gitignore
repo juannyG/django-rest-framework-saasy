@@ -1,0 +1,6 @@
+*.pyc
+*.db
+*~
+.*
+*.egg-info/
+!.gitignore
