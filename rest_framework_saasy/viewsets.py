@@ -51,8 +51,9 @@ class ViewSetMixin(object):
 
                 saas_client = SAAS_MODEL.objects.get(**client_filter)
                 client_module = saas_client.saas_client_module(saas_url_kw)
-                if hasattr(cls, 'saas_module'):
-                    cls_module = cls.saas_module()
+                cls_saas_module = cls.saas_module()
+                if cls_saas_module:
+                    cls_module = cls_saas_module
 
                 merchant_cls_module = '{}.{}'.format(client_module, cls_module)
                 try:
@@ -106,7 +107,8 @@ class ViewSetMixin(object):
         view.suffix = initkwargs.get('suffix', None)
         return view
 
-    def saas_module(self, *args, **kwargs):
+    @staticmethod
+    def saas_module(*args, **kwargs):
         """Optional method to define package definition to be used
         as a subpackage reference to the client custom package"""
         pass

@@ -93,7 +93,7 @@ class NoteViewSet(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
     serializer_class = NoteSerializer
 
     @staticmethod
-    def saas_module():
+    def saas_module(*args, **kwargs):
         return 'test_routers'
 
 
