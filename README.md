@@ -163,6 +163,29 @@ The value of the valid identifier from the URL key word argument can be
 accessed at any time. If no client specific route was used, *saas_url_kw*
 defaults to None.
 
+#### SaaS SimpleRouter
+
+You'll register your new SaaSy viewsets in exactly the same way Django
+REST Framework defines.
+
+##### app.urls
+```python
+from rest_framework_saasy import routers
+from .views import NoteViewSet
+
+
+router = routers.SimpleRouter()
+router.register(r'notes', NoteViewSet)
+```
+
+Client specific routes will be made available immediately:
+```
+^notes/$ [name='note-list']
+^notes/(?P<pk>[^/]+)/$ [name='note-detail']
+^(?P<saas_url_kw>.*)/notes/$ [name='note-list']
+^(?P<saas_url_kw>.*)/notes/(?P<pk>[^/]+)/$ [name='note-detail']
+```
+
 License
 =======
 The MIT License (MIT)
