@@ -1,7 +1,7 @@
 Django REST Framework SaaS Plugin
 =================================
 
-#### Overview
+### Overview
 
 This is a SaaS driven plugin for Django REST Framework. It offers a simple way
 to separate client customizations for your core API web services. Currently, this
@@ -9,15 +9,15 @@ initial version only supports client API routing via ViewSets in conjunction wit
 an extension of the Django REST Framework SimpleRouter. Future releases will
 have broader coverage of DRF features for custom client routing.
 
-#### Install
+### Install
 ```pip install djangorestframework-saasy```
 
-#### Requirements
+### Requirements
 - Python (2.7)
 - Django (1.4.2+)
 - Django rest framework (2.3.14+)
 
-#### Example
+### Example
 
 Define the client model in your django rest framework settings:
 ```python
@@ -49,7 +49,7 @@ class ClientModel(models.Model, ClientMixin):
         return 'customizations.{}'.format(self.name)
 ```
 
-##### ClientMixin methods
+#### ClientMixin methods
 
 - *saas_lookup_field* **[required]**
 
@@ -79,7 +79,7 @@ class ClientModel(models.Model, ClientMixin):
           └── module.py
   ```
 
-#### ViewSets
+### ViewSets
 
 The idea is there is a core web service ViewSet, *WebService*, defined 
 in **app.subpackage.module** and in **customizations.client_name.app.subpackage.module** 
@@ -112,7 +112,7 @@ path for the ViewSet mixed with the *saas_viewsets.ViewSetMixin*.
 What cannot be customized is the name of the class - the class name *WebService* in the
 core must be defined identically in the client custom module.
 
-##### ViewSetMixin methods
+#### ViewSetMixin methods
 
 - *saas_module* **[optional]**
 
@@ -156,19 +156,19 @@ core must be defined identically in the client custom module.
           └── module.py
   ```
 
-##### ViewSet attributes
+#### ViewSet attributes
 
 *saas_url_kw* is a new attribute made available to the ViewSet instance. 
 The value of the valid identifier from the URL key word argument can be 
 accessed at any time. If no client specific route was used, *saas_url_kw*
 defaults to None.
 
-#### SaaS SimpleRouter
+### SaaS SimpleRouter
 
 You'll register your new SaaSy viewsets in exactly the same way Django
 REST Framework defines.
 
-##### app.urls
+#### app.urls
 ```python
 from rest_framework_saasy import routers
 from .views import NoteViewSet
