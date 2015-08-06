@@ -14,8 +14,8 @@ have broader coverage of DRF features for custom client routing.
 
 ### Requirements
 - Python (2.7)
-- Django (1.4.2+)
-- Django rest framework (2.3.14+)
+- Django (1.6.5)
+- Django rest framework (2.3.14)
 
 ### Example
 

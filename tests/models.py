@@ -13,7 +13,7 @@ class ClientModel(models.Model, ClientMixin):
         return 'name'
 
     def saas_client_module(self, saas_url_kw):
-        return 'rest_framework_saasy.tests.{}'.format(self.name)
+        return 'tests.{}'.format(self.name)
 
 
 class RouterTestModel(models.Model):

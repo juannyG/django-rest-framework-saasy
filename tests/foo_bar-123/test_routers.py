@@ -1,7 +1,7 @@
 """Test client extension"""
 # from rest_framework.decorators import link, action
 from rest_framework.response import Response
-from rest_framework_saasy.tests.test_routers import NoteViewSet as CoreNoteViewSet
+from tests.test_routers import NoteViewSet as CoreNoteViewSet
 
 
 class NoteViewSet(CoreNoteViewSet):
