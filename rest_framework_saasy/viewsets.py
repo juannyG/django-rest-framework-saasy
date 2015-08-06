@@ -45,7 +45,7 @@ class ViewSetMixin(object):
             if saas_url_kw:
                 client_filter = {SAAS_MODEL.saas_lookup_field(): saas_url_kw}
                 if not SAAS_MODEL.objects.filter(**client_filter).exists():
-                    raise Exception("Client {} does not exist".format(saas_url_kw))
+                    raise Exception("Client {0} does not exist".format(saas_url_kw))
                 cls_name = cls.__name__
                 cls_module = cls.__module__
 
@@ -55,7 +55,7 @@ class ViewSetMixin(object):
                 if cls_saas_module:
                     cls_module = cls_saas_module
 
-                merchant_cls_module = '{}.{}'.format(client_module, cls_module)
+                merchant_cls_module = '{0}.{1}'.format(client_module, cls_module)
                 try:
                     merchant_cls_mod = importlib.import_module(merchant_cls_module)
                     merchant_cls = getattr(merchant_cls_mod, cls_name)

@@ -63,10 +63,10 @@ class TestSimpleRouter(TestCase):
             client_route = decorator_routes[i]
             # check url listing
             self.assertEqual(client_route.url,
-                             '^(?P<{}>.*)/'.format(routers.SAAS_URL_KW) +
+                             '^(?P<{0}>.*)/'.format(routers.SAAS_URL_KW) +
                              '{prefix}/' +
                              '{lookup}/' +
-                             '{}{{trailing_slash}}$'.format(endpoint)
+                             '{0}{{trailing_slash}}$'.format(endpoint)
                              )
             # check method to function mapping
             if endpoint == 'action3':

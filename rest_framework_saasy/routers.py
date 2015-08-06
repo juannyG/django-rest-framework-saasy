@@ -4,7 +4,7 @@ SaaS Router customizations
 from rest_framework import routers
 
 SAAS_URL_KW = "saas_url_kw"
-_SAAS_URL_REGEX = "(?P<{}>.*)".format(SAAS_URL_KW)
+_SAAS_URL_REGEX = "(?P<{0}>.*)".format(SAAS_URL_KW)
 
 LIST_ROUTE_ARGS = {
     'mapping': {'get': 'list', 'post': 'create'},
