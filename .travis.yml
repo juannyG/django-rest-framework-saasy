@@ -1,5 +1,5 @@
 language: python
-install:
-    - pip install tox
-script:
-    - tox
+install: pip install tox
+script: tox
+before_install: pip install codecov
+after_success: codecov
