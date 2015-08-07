@@ -51,15 +51,10 @@ class TestSimpleRouter(TestCase):
         """Test client link & action decorator routing"""
         endpoints = ['action1', 'action2', 'action3', 'link1', 'link2']
         routes = self.router.get_routes(BasicViewSet)
-        import pprint
-        pprint.pprint(routes)
-        print self.router
         decorator_routes = routes[9:]
 
         # Make sure all these endpoints exist and none have been clobbered
-        print decorator_routes
         for i, endpoint in enumerate(endpoints):
-            print i, endpoint
             client_route = decorator_routes[i]
             # check url listing
             self.assertEqual(client_route.url,
