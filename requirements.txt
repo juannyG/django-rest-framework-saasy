@@ -1,4 +1,12 @@
-Django>=1.3
-djangorestframework>=2.3.14
+importlib==1.0.3
+Django==1.6.5
+coverage==3.7.1
+djangorestframework==2.3.14
 mock==1.0.1
+tox==2.1.1
+py==1.4.30
+pytest==2.7.2
+pytest-cov==2.0.0
+pytest-django==2.8.0
 simplejson==3.6.0
+wsgiref==0.1.2

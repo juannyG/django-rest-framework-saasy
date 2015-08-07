@@ -1,6 +1,8 @@
 Django REST Framework SaaS Plugin
 =================================
 
+[![Build Status](https://travis-ci.org/juannyG/django-rest-framework-saasy.svg?branch=0.2dev)](https://travis-ci.org/juannyG/django-rest-framework-saasy) [![codecov.io](http://codecov.io/github/juannyG/django-rest-framework-saasy/coverage.svg?branch=0.2dev)](http://codecov.io/github/juannyG/django-rest-framework-saasy?branch=0.2dev)
+
 ### Overview
 
 This is a SaaS driven plugin for Django REST Framework. It offers a simple way
@@ -14,8 +16,8 @@ have broader coverage of DRF features for custom client routing.
 
 ### Requirements
 - Python (2.7)
-- Django (1.4.2+)
-- Django rest framework (2.3.14+)
+- Django (1.6.5)
+- Django rest framework (2.3.14)
 
 ### Example
 

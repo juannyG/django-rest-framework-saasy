@@ -1,12 +1,4 @@
 """SaaS router test suite"""
-SAAS_CLIENT_MODEL = 'rest_framework_saasy.tests.models.ClientModel'
-
-from django.conf import settings
-settings.REST_FRAMEWORK['SAAS'] = {
-    'MODEL': SAAS_CLIENT_MODEL,
-    }
-
-
 import simplejson
 from django.test import TestCase
 from rest_framework import serializers, viewsets
@@ -66,10 +58,10 @@ class TestSimpleRouter(TestCase):
             client_route = decorator_routes[i]
             # check url listing
             self.assertEqual(client_route.url,
-                             '^(?P<{}>.*)/'.format(routers.SAAS_URL_KW) +
+                             '^(?P<{0}>.*)/'.format(routers.SAAS_URL_KW) +
                              '{prefix}/' +
                              '{lookup}/' +
-                             '{}{{trailing_slash}}$'.format(endpoint)
+                             '{0}{{trailing_slash}}$'.format(endpoint)
                              )
             # check method to function mapping
             if endpoint == 'action3':
@@ -99,7 +91,7 @@ class NoteViewSet(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
 
 class TestSaaSRouting(TestCase):
     """ViewSet test suite"""
-    urls = 'rest_framework_saasy.tests.test_routers'
+    urls = 'tests.test_routers'
 
     def setUp(self):
         ClientModel.objects.create(name='foo_bar-123')
@@ -110,9 +102,7 @@ class TestSaaSRouting(TestCase):
     def register(self):
         self.router = routers.SimpleRouter()
         self.router.register(r'notes', NoteViewSet)
-
-        from rest_framework_saasy.tests import test_routers
-        urls = getattr(test_routers, 'urlpatterns')
+        urls = urlpatterns
         urls += patterns('',
                          url(r'^', include(self.router.urls)),
                          )
