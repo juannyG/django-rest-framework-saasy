@@ -102,9 +102,7 @@ class TestSaaSRouting(TestCase):
     def register(self):
         self.router = routers.SimpleRouter()
         self.router.register(r'notes', NoteViewSet)
-
-        from tests import test_routers
-        urls = getattr(test_routers, 'urlpatterns')
+        urls = urlpatterns
         urls += patterns('',
                          url(r'^', include(self.router.urls)),
                          )
