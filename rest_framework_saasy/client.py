@@ -1,5 +1,9 @@
 """SaaS Client Mixin"""
 
+from .utils import classproperty
+
+__all__ = ['ClientMixin']
+
 
 class ClientMixin(object):
     """
@@ -16,8 +20,9 @@ class ClientMixin(object):
     The ClientMixin class dictates the implementation rules. There
     is no functionality defined here.
     """
-
-    def saas_lookup_field(self, *args, **kwargs):
+    @classproperty
+    @classmethod
+    def saas_lookup_field(cls):
         """Define the model lookup field to use when querying the database
         for the client record"""
         raise NotImplementedError

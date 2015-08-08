@@ -9,6 +9,8 @@ from rest_framework_saasy.routers import SAAS_URL_KW
 
 logger = logging.getLogger(__name__)
 
+__all__ = ['ViewSetMixin']
+
 
 class ViewSetMixin(object):
     """@see rest_framework.viewsets.ViewSetMixin
@@ -43,7 +45,7 @@ class ViewSetMixin(object):
         def _get_cls(saas_url_kw):
             """SaaS magic - determine custom viewset class or default"""
             if saas_url_kw:
-                client_filter = {SAAS_MODEL.saas_lookup_field(): saas_url_kw}
+                client_filter = {SAAS_MODEL.saas_lookup_field: saas_url_kw}
                 if not SAAS_MODEL.objects.filter(**client_filter).exists():
                     raise Exception("Client {0} does not exist".format(saas_url_kw))
                 cls_name = cls.__name__

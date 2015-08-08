@@ -29,25 +29,14 @@ METHOD_ROUTE_ARGS = {
     'initkwargs': {}
 }
 
+__all__ = ['SimpleRouter', 'SAAS_URL_KW']
+
 
 class SimpleRouter(routers.SimpleRouter):
     """
     SimpleRouter for SaaS
     """
-    routes = [
-        # Default routes
-        routers.Route(
-            url=r'^{prefix}{trailing_slash}$',
-            **LIST_ROUTE_ARGS
-        ),
-        routers.Route(
-            url=r'^{prefix}/{lookup}{trailing_slash}$',
-            **DETAIL_ROUTE_ARGS
-        ),
-        routers.Route(
-            url=r'^{prefix}/{lookup}/{methodname}{trailing_slash}$',
-            **METHOD_ROUTE_ARGS
-        ),
+    routes = routers.SimpleRouter.routes + [
         # Client specific routes...
         routers.Route(
             url=r'^{0}/{{prefix}}{{trailing_slash}}$'.format(_SAAS_URL_REGEX),
