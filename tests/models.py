@@ -1,14 +1,16 @@
 """Model for tests cases"""
 from django.db import models
 from rest_framework_saasy.client import ClientMixin
+from rest_framework_saasy.utils import classproperty
 
 
 class ClientModel(models.Model, ClientMixin):
     """Test client model"""
     name = models.CharField(max_length=128)
 
-    @staticmethod
-    def saas_lookup_field():
+    @classproperty
+    @classmethod
+    def saas_lookup_field(cls):
         """DRF-SaaS lookup field definition"""
         return 'name'
 
