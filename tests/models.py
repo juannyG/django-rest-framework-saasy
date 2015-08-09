@@ -9,7 +9,6 @@ class ClientModel(models.Model, ClientMixin):
     name = models.CharField(max_length=128)
 
     @classproperty
-    @classmethod
     def saas_lookup_field(cls):
         """DRF-SaaS lookup field definition"""
         return 'name'

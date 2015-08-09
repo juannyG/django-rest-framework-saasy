@@ -21,7 +21,6 @@ class ClientMixin(object):
     is no functionality defined here.
     """
     @classproperty
-    @classmethod
     def saas_lookup_field(cls):
         """Define the model lookup field to use when querying the database
         for the client record"""
