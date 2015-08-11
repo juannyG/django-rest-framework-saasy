@@ -55,7 +55,6 @@ class ViewSetMixin(viewsets.ViewSetMixin):
         initialization.
         """
         super(ViewSetMixin, cls).as_view(actions, **initkwargs)
-        cls.suffix = None
 
         def view(request, *args, **kwargs):
             """Slightly modified rest_framework wrapped view.
