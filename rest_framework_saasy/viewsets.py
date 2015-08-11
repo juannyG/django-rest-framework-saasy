@@ -1,9 +1,12 @@
 import importlib
 import logging
 import traceback
+from functools import update_wrapper
+
 from django.http import Http404
 from django.utils.decorators import classonlymethod
-from functools import update_wrapper
+from rest_framework import viewsets
+
 from rest_framework_saasy.settings import SAAS_MODEL
 from rest_framework_saasy.routers import SAAS_URL_KW
 
@@ -12,69 +15,55 @@ logger = logging.getLogger(__name__)
 __all__ = ['ViewSetMixin']
 
 
-class ViewSetMixin(object):
-    """@see rest_framework.viewsets.ViewSetMixin
+class ViewSetMixin(viewsets.ViewSetMixin):
+    """SaaS extension of rest_framework ViewSetMixin"""
+    SAAS_MODULE = None
 
-    As rest_framework states, this is where all the magic happens.
-    We're adding some extra SaaS magic by checking for the client
-    lookup param in the request arguments and trying to import,
-    from a client specific folder, the same module & class name
-    that the base ViewSet has, but simply in a different destination...
-    the client's folder.
-    """
+    @classonlymethod
+    def get_merchant_cls(cls, saas_url_kw):
+        """SaaS magic - determine custom viewset class or default"""
+        merchant_cls = None
+        if saas_url_kw:
+            try:
+                saas_client = SAAS_MODEL.objects.get(
+                    **{SAAS_MODEL.saas_lookup_field: saas_url_kw}
+                )
+            except SAAS_MODEL.DoesNotExist:
+                raise Exception("Client {0} does not exist".format(saas_url_kw))
+
+            cls_name = cls.__name__
+            cls_module = cls.__module__
+
+            client_module = saas_client.saas_client_module(saas_url_kw)
+            merchant_cls_module = '{0}.{1}'.format(client_module,
+                                                   cls.SAAS_MODULE or cls_module)
+
+            try:
+                merchant_cls_mod = importlib.import_module(merchant_cls_module)
+                merchant_cls = getattr(merchant_cls_mod, cls_name)
+            except ImportError:
+                pass
+            except:
+                logger.error(traceback.format_exc())
+                raise Http404
+        return merchant_cls
+
     @classonlymethod
     def as_view(cls, actions=None, **initkwargs):
-        """Because of the way class based views create a closure around the
-        instantiated view, we need to totally reimplement `.as_view`,
-        and slightly modify the view function that is created and returned.
+        """While this call returns the view function, it needs to be
+        reworked due to the nature of this plugin: dynamic class
+        initialization.
         """
-        # The suffix initkwarg is reserved for identifing the viewset type
-        # eg. 'List' or 'Instance'.
-        cls.suffix = None
-
-        # sanitize keyword arguments
-        for key in initkwargs:
-            if key in cls.http_method_names:
-                raise TypeError("You tried to pass in the %s method name as a "
-                                "keyword argument to %s(). Don't do that."
-                                % (key, cls.__name__))
-            if not hasattr(cls, key):
-                raise TypeError("%s() received an invalid keyword %r" % (
-                    cls.__name__, key))
-
-        def _get_cls(saas_url_kw):
-            """SaaS magic - determine custom viewset class or default"""
-            if saas_url_kw:
-                client_filter = {SAAS_MODEL.saas_lookup_field: saas_url_kw}
-                if not SAAS_MODEL.objects.filter(**client_filter).exists():
-                    raise Exception("Client {0} does not exist".format(saas_url_kw))
-                cls_name = cls.__name__
-                cls_module = cls.__module__
-
-                saas_client = SAAS_MODEL.objects.get(**client_filter)
-                client_module = saas_client.saas_client_module(saas_url_kw)
-                cls_saas_module = cls.saas_module()
-                if cls_saas_module:
-                    cls_module = cls_saas_module
-
-                merchant_cls_module = '{0}.{1}'.format(client_module, cls_module)
-                try:
-                    merchant_cls_mod = importlib.import_module(merchant_cls_module)
-                    merchant_cls = getattr(merchant_cls_mod, cls_name)
-                    return merchant_cls(**initkwargs)
-                except ImportError:
-                    pass
-                except:
-                    logger.error(traceback.format_exc())
-                    raise Http404
-
-            # If there's nothing special, go classic...
-            return cls(**initkwargs)
+        super(ViewSetMixin, cls).as_view(actions, **initkwargs)
 
         def view(request, *args, **kwargs):
-            """Slightly modified rest_framework as_view magic..."""
+            """Slightly modified rest_framework wrapped view.
+
+            @see rest_framework.viewsets.ViewSetMixin
+            """
             saas_url_kw = kwargs.get(SAAS_URL_KW)
-            self = _get_cls(saas_url_kw)
+            _cls = cls.get_merchant_cls(saas_url_kw) or cls
+            self = _cls(**initkwargs)
             setattr(self, SAAS_URL_KW, saas_url_kw)
 
             # We also store the mapping of request methods to actions,
@@ -108,9 +97,3 @@ class ViewSetMixin(object):
         view.cls = cls
         view.suffix = initkwargs.get('suffix', None)
         return view
-
-    @staticmethod
-    def saas_module(*args, **kwargs):
-        """Optional method to define package definition to be used
-        as a subpackage reference to the client custom package"""
-        pass
