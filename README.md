@@ -16,7 +16,7 @@ have broader coverage of DRF features for custom client routing.
 ```pip install djangorestframework-saasy```
 
 ### Requirements
-- Python (2.7, 2.6)
+- Python (2.6, 2.7)
 - Django (1.6.5)
 - Django rest framework (2.3.14)
 
