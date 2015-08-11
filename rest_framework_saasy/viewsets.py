@@ -37,7 +37,7 @@ class ViewSetMixin(viewsets.ViewSetMixin):
             client_module = saas_client.saas_client_module(saas_url_kw)
             merchant_cls_module = '{0}.{1}'.format(client_module,
                                                    cls.SAAS_MODULE or cls_module)
-            print merchant_cls_module
+
             try:
                 merchant_cls_mod = importlib.import_module(merchant_cls_module)
                 merchant_cls = getattr(merchant_cls_mod, cls_name)
