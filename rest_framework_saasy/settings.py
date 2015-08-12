@@ -12,3 +12,5 @@ SAAS_SETTINGS = REST_SETTINGS.get('SAAS', {})
 SAAS_MODEL = import_from_string(SAAS_SETTINGS.get('MODEL'),
                                 'MODEL'
                                 ) if SAAS_SETTINGS.get('MODEL') else None
+
+SAAS_LOOKUP_FIELD = SAAS_SETTINGS.get('LOOKUP_FIELD', 'id')

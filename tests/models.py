@@ -8,11 +8,6 @@ class ClientModel(models.Model, ClientMixin):
     """Test client model"""
     name = models.CharField(max_length=128)
 
-    @classproperty
-    def saas_lookup_field(cls):
-        """DRF-SaaS lookup field definition"""
-        return 'name'
-
     def saas_client_module(self, saas_url_kw):
         return 'tests.{0}'.format(self.name)
 

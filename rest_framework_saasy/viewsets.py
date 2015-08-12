@@ -7,7 +7,7 @@ from django.http import Http404
 from django.utils.decorators import classonlymethod
 from rest_framework import viewsets
 
-from rest_framework_saasy.settings import SAAS_MODEL
+from rest_framework_saasy.settings import SAAS_MODEL, SAAS_LOOKUP_FIELD
 from rest_framework_saasy.routers import SAAS_URL_KW
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ class ViewSetMixin(viewsets.ViewSetMixin):
         if saas_url_kw:
             try:
                 saas_client = SAAS_MODEL.objects.get(
-                    **{SAAS_MODEL.saas_lookup_field: saas_url_kw}
+                    **{SAAS_LOOKUP_FIELD: saas_url_kw}
                 )
             except SAAS_MODEL.DoesNotExist:
                 raise Exception("Client {0} does not exist".format(saas_url_kw))

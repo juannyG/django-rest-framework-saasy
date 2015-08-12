@@ -12,7 +12,8 @@ class ClientMixin(object):
     REST_SETTINGS = {
         ...
         "SAAS": {
-            "MODEL": "app.client.Model"
+            "MODEL": "app.client.Model",
+            "LOOKUP_FIELD": "fieldname"
         }
         ...
     }
@@ -20,12 +21,6 @@ class ClientMixin(object):
     The ClientMixin class dictates the implementation rules. There
     is no functionality defined here.
     """
-    @classproperty
-    def saas_lookup_field(cls):
-        """Define the model lookup field to use when querying the database
-        for the client record"""
-        raise NotImplementedError
-
     def saas_client_module(self, saas_url_kw, *args, **kwargs):
         """Define module path to client customization"""
         raise NotImplementedError
