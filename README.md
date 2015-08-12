@@ -38,7 +38,6 @@ Use the saas client mixin provided by the SaaS plugin, and define the required c
 ```python
 from django.db import models
 from rest_framework_saasy.client import ClientMixin
-from rest_framework_saasy.utils import classproperty
 
 
 class ClientModel(models.Model, ClientMixin):

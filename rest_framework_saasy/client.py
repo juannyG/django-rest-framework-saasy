@@ -1,7 +1,5 @@
 """SaaS Client Mixin"""
 
-from .utils import classproperty
-
 __all__ = ['ClientMixin']
 
 
