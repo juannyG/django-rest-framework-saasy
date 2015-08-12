@@ -10,5 +10,6 @@ def pytest_configure():
             'rest_framework_saasy',
             'tests',
         ),
-        REST_FRAMEWORK={'SAAS': {'MODEL': 'tests.models.ClientModel'}}
+        REST_FRAMEWORK={'SAAS': {'MODEL': 'tests.models.ClientModel',
+                                 'LOOKUP_FIELD': 'name'}}
     )

@@ -9,10 +9,6 @@ class ClientMixinUnitTests(TestCase):
     def setUp(self):
         self.client_mixin = ClientMixin()
 
-    def test_saas_lookup_field(self):
-        with self.assertRaises(NotImplementedError):
-            self.client_mixin.saas_lookup_field
-
     def test_saas_client_module(self):
         with self.assertRaises(NotImplementedError):
             self.client_mixin.saas_client_module('test_saas_url_kw')

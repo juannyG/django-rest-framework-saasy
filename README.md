@@ -22,43 +22,33 @@ have broader coverage of DRF features for custom client routing.
 
 ### Example
 
-Define the client model in your django rest framework settings:
+Define the client model and the field lookup in your django rest framework settings:
 ```python
 REST_SETTINGS = {
     ...
     "SAAS": {
-        "MODEL": "path.to.model.ClientModel"
+        "MODEL": "path.to.model.ClientModel",
+        "LOOKUP_FIELD": "name"
     }
     ...
 }
 ```
 
-Use the saas client mixin provided by the SaaS plugin, and define the required class methods:
+Use the saas client mixin provided by the SaaS plugin, and define the required class method:
 ```python
 from django.db import models
 from rest_framework_saasy.client import ClientMixin
-from rest_framework_saasy.utils import classproperty
 
 
 class ClientModel(models.Model, ClientMixin):
     """client model"""
     name = models.CharField(max_length=128)
 
-    @classproperty
-    def saas_lookup_field(cls):
-        """DRF-SaaS lookup field definition"""
-        return 'name'
-
     def saas_client_module(self, saas_url_kw, *args, **kwargs):
         return 'customizations.{}'.format(self.name)
 ```
 
-#### ClientMixin methods
-
-- *saas_lookup_field* **[required]**
-
-  This method defines what field in your client model to use when looking up
-  the client in the database, to verify they exist.
+#### ClientMixin method
 
 - *saas_client_module* **[required]**
 
