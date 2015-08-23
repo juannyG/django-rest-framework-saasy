@@ -1,17 +1,16 @@
 """SaaS router test suite"""
 import simplejson
+
+from mock import patch
 from django.test import TestCase
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import link, action
 from rest_framework.compat import include, patterns, url
 from rest_framework.response import Response
-# from rest_framework.test import APIRequestFactory
+
 from rest_framework_saasy import routers
-from mock import patch
 from rest_framework_saasy import viewsets as saas_viewsets
 from .models import ClientModel, RouterTestModel
-
-# factory = APIRequestFactory()
 
 urlpatterns = patterns('',)
 
@@ -140,7 +139,7 @@ class TestSaaSRouting(TestCase):
         response = self.client.get('/foo_bar-123/baz/')
         self.assertEqual(response.status_code, 404)
 
-    @patch('rest_framework_saasy.viewsets.importlib.import_module')
+    @patch('rest_framework_saasy.utils.importlib.import_module')
     def test_merchant_cls_exception(self, import_module_mock):
         """If the merchant class is throwing an exception, log it, and return 404"""
         import_module_mock.side_effect = Exception('test!')

@@ -1,16 +1,10 @@
-import importlib
-import logging
-import traceback
 from functools import update_wrapper
 
-from django.http import Http404
 from django.utils.decorators import classonlymethod
 from rest_framework import viewsets
 
-from rest_framework_saasy.settings import SAAS_MODEL, SAAS_LOOKUP_FIELD
 from rest_framework_saasy.routers import SAAS_URL_KW
-
-logger = logging.getLogger(__name__)
+from rest_framework_saasy.utils import get_merchant_cls
 
 __all__ = ['ViewSetMixin']
 
@@ -18,35 +12,6 @@ __all__ = ['ViewSetMixin']
 class ViewSetMixin(viewsets.ViewSetMixin):
     """SaaS extension of rest_framework ViewSetMixin"""
     SAAS_MODULE = None
-
-    @classonlymethod
-    def get_merchant_cls(cls, saas_url_kw):
-        """SaaS magic - determine custom viewset class or default"""
-        merchant_cls = None
-        if saas_url_kw:
-            try:
-                saas_client = SAAS_MODEL.objects.get(
-                    **{SAAS_LOOKUP_FIELD: saas_url_kw}
-                )
-            except SAAS_MODEL.DoesNotExist:
-                raise Exception("Client {0} does not exist".format(saas_url_kw))
-
-            cls_name = cls.__name__
-            cls_module = cls.__module__
-
-            client_module = saas_client.saas_client_module(saas_url_kw)
-            merchant_cls_module = '{0}.{1}'.format(client_module,
-                                                   cls.SAAS_MODULE or cls_module)
-
-            try:
-                merchant_cls_mod = importlib.import_module(merchant_cls_module)
-                merchant_cls = getattr(merchant_cls_mod, cls_name)
-            except ImportError:
-                pass
-            except:
-                logger.error(traceback.format_exc())
-                raise Http404
-        return merchant_cls
 
     @classonlymethod
     def as_view(cls, actions=None, **initkwargs):
@@ -62,7 +27,7 @@ class ViewSetMixin(viewsets.ViewSetMixin):
             @see rest_framework.viewsets.ViewSetMixin
             """
             saas_url_kw = kwargs.get(SAAS_URL_KW)
-            _cls = cls.get_merchant_cls(saas_url_kw) or cls
+            _cls = get_merchant_cls(cls, saas_url_kw) or cls
             self = _cls(**initkwargs)
             setattr(self, SAAS_URL_KW, saas_url_kw)
 
