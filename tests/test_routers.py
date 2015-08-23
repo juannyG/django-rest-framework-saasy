@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """SaaS router test suite"""
 import simplejson
 

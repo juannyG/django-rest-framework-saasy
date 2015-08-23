@@ -6,13 +6,15 @@ import traceback
 
 from django.http import Http404
 
+from rest_framework_saasy.routers import SAAS_URL_KW
 from rest_framework_saasy.settings import SAAS_MODEL, SAAS_LOOKUP_FIELD
 
-__all__ = ['get_merchant_cls']
+__all__ = ['get_cls']
 
 
-def get_merchant_cls(cls, saas_url_kw):
+def get_cls(cls, kwargs, initkwargs):
     """SaaS magic - determine custom viewset class or default"""
+    saas_url_kw = kwargs.get(SAAS_URL_KW)
     merchant_cls = None
     if saas_url_kw:
         try:
@@ -38,4 +40,8 @@ def get_merchant_cls(cls, saas_url_kw):
             logger = logging.getLogger(__name__)
             logger.error(traceback.format_exc())
             raise Http404
-    return merchant_cls
+
+    _cls = merchant_cls or cls
+    self = _cls(**initkwargs)
+    setattr(self, SAAS_URL_KW, saas_url_kw)
+    return self

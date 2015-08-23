@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+"""DRF SaaS ViewSetMixin"""
 from functools import update_wrapper
 
 from django.utils.decorators import classonlymethod
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 
-from rest_framework_saasy.routers import SAAS_URL_KW
-from rest_framework_saasy.utils import get_merchant_cls
+from rest_framework_saasy.utils import get_cls
 
 __all__ = ['ViewSetMixin']
 
@@ -26,10 +28,7 @@ class ViewSetMixin(viewsets.ViewSetMixin):
 
             @see rest_framework.viewsets.ViewSetMixin
             """
-            saas_url_kw = kwargs.get(SAAS_URL_KW)
-            _cls = get_merchant_cls(cls, saas_url_kw) or cls
-            self = _cls(**initkwargs)
-            setattr(self, SAAS_URL_KW, saas_url_kw)
+            self = get_cls(cls, kwargs, initkwargs)
 
             # We also store the mapping of request methods to actions,
             # so that we can later set the action attribute.
@@ -61,4 +60,4 @@ class ViewSetMixin(viewsets.ViewSetMixin):
         # resolved URL.
         view.cls = cls
         view.suffix = initkwargs.get('suffix', None)
-        return view
+        return csrf_exempt(view)
