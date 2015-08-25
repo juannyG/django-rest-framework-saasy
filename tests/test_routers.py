@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from rest_framework_saasy import routers
 from rest_framework_saasy import viewsets as saas_viewsets
-from .models import ClientModel, RouterTestModel
+from .models import ClientModel, TestModel
 
 urlpatterns = patterns('',)
 
@@ -19,27 +19,27 @@ urlpatterns = patterns('',)
 class BasicViewSet(saas_viewsets.ViewSetMixin, viewsets.ViewSet):
     """ViewSet for tests"""
     def list(self, request, *args, **kwargs):
-        return Response({'method': 'list'})
+        return Response({'method': 'list'}) # pragma: no cover
 
     @action()
     def action1(self, request, *args, **kwargs):
-        return Response({'method': 'action1'})
+        return Response({'method': 'action1'}) # pragma: no cover
 
     @action()
     def action2(self, request, *args, **kwargs):
-        return Response({'method': 'action2'})
+        return Response({'method': 'action2'}) # pragma: no cover
 
     @action(methods=['post', 'delete'])
     def action3(self, request, *args, **kwargs):
-        return Response({'method': 'action2'})
+        return Response({'method': 'action2'}) # pragma: no cover
 
     @link()
     def link1(self, request, *args, **kwargs):
-        return Response({'method': 'link1'})
+        return Response({'method': 'link1'}) # pragma: no cover
 
     @link()
     def link2(self, request, *args, **kwargs):
-        return Response({'method': 'link2'})
+        return Response({'method': 'link2'}) # pragma: no cover
 
 
 class TestSimpleRouter(TestCase):
@@ -76,14 +76,14 @@ class TestSimpleRouter(TestCase):
 
 class NoteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = RouterTestModel
+        model = TestModel
         fields = ('url', 'uuid', 'text')
 
 
 class NoteViewSet(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
     SAAS_MODULE = 'test_routers'
 
-    queryset = RouterTestModel.objects.all()
+    queryset = TestModel.objects.all()
     serializer_class = NoteSerializer
 
 
@@ -94,7 +94,7 @@ class TestSaaSRouting(TestCase):
     def setUp(self):
         ClientModel.objects.create(name='foo_bar-123')
         ClientModel.objects.create(name='bar')
-        RouterTestModel.objects.create(uuid='123', text='foo bar')
+        TestModel.objects.create(uuid='123', text='foo bar')
         self.register()
 
     def register(self):
