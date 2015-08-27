@@ -1,17 +1,17 @@
+# -*- coding: utf-8 -*-
 """SaaS router test suite"""
 import simplejson
+
+from mock import patch
 from django.test import TestCase
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import link, action
 from rest_framework.compat import include, patterns, url
 from rest_framework.response import Response
-# from rest_framework.test import APIRequestFactory
-from rest_framework_saasy import routers
-from mock import patch
-from rest_framework_saasy import viewsets as saas_viewsets
-from .models import ClientModel, RouterTestModel
 
-# factory = APIRequestFactory()
+from rest_framework_saasy import routers
+from rest_framework_saasy import viewsets as saas_viewsets
+from .models import ClientModel, TestModel
 
 urlpatterns = patterns('',)
 
@@ -19,27 +19,27 @@ urlpatterns = patterns('',)
 class BasicViewSet(saas_viewsets.ViewSetMixin, viewsets.ViewSet):
     """ViewSet for tests"""
     def list(self, request, *args, **kwargs):
-        return Response({'method': 'list'})
+        return Response({'method': 'list'}) # pragma: no cover
 
     @action()
     def action1(self, request, *args, **kwargs):
-        return Response({'method': 'action1'})
+        return Response({'method': 'action1'}) # pragma: no cover
 
     @action()
     def action2(self, request, *args, **kwargs):
-        return Response({'method': 'action2'})
+        return Response({'method': 'action2'}) # pragma: no cover
 
     @action(methods=['post', 'delete'])
     def action3(self, request, *args, **kwargs):
-        return Response({'method': 'action2'})
+        return Response({'method': 'action2'}) # pragma: no cover
 
     @link()
     def link1(self, request, *args, **kwargs):
-        return Response({'method': 'link1'})
+        return Response({'method': 'link1'}) # pragma: no cover
 
     @link()
     def link2(self, request, *args, **kwargs):
-        return Response({'method': 'link2'})
+        return Response({'method': 'link2'}) # pragma: no cover
 
 
 class TestSimpleRouter(TestCase):
@@ -76,14 +76,14 @@ class TestSimpleRouter(TestCase):
 
 class NoteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = RouterTestModel
+        model = TestModel
         fields = ('url', 'uuid', 'text')
 
 
 class NoteViewSet(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
     SAAS_MODULE = 'test_routers'
 
-    queryset = RouterTestModel.objects.all()
+    queryset = TestModel.objects.all()
     serializer_class = NoteSerializer
 
 
@@ -94,7 +94,7 @@ class TestSaaSRouting(TestCase):
     def setUp(self):
         ClientModel.objects.create(name='foo_bar-123')
         ClientModel.objects.create(name='bar')
-        RouterTestModel.objects.create(uuid='123', text='foo bar')
+        TestModel.objects.create(uuid='123', text='foo bar')
         self.register()
 
     def register(self):
@@ -140,7 +140,7 @@ class TestSaaSRouting(TestCase):
         response = self.client.get('/foo_bar-123/baz/')
         self.assertEqual(response.status_code, 404)
 
-    @patch('rest_framework_saasy.viewsets.importlib.import_module')
+    @patch('rest_framework_saasy.utils.importlib.import_module')
     def test_merchant_cls_exception(self, import_module_mock):
         """If the merchant class is throwing an exception, log it, and return 404"""
         import_module_mock.side_effect = Exception('test!')
