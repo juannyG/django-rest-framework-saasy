@@ -16,7 +16,7 @@ from .models import ClientModel, TestModel
 urlpatterns = patterns('',)
 
 
-class BasicViewSet(saas_viewsets.ViewSetMixin, viewsets.ViewSet):
+class BasicViewSet(saas_viewsets.ViewSet):
     """ViewSet for tests"""
     def list(self, request, *args, **kwargs):
         return Response({'method': 'list'}) # pragma: no cover
@@ -80,7 +80,7 @@ class NoteSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'uuid', 'text')
 
 
-class NoteViewSet(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
+class NoteViewSet(saas_viewsets.ViewSet, viewsets.ModelViewSet):
     SAAS_MODULE = 'test_routers'
 
     queryset = TestModel.objects.all()
