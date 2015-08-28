@@ -8,7 +8,7 @@ from rest_framework import viewsets
 
 from rest_framework_saasy.utils import get_cls
 
-__all__ = ['ViewSetMixin']
+__all__ = ['ViewSetMixin', 'ViewSet', 'GenericViewSet']
 
 
 class ViewSetMixin(viewsets.ViewSetMixin):
@@ -61,3 +61,10 @@ class ViewSetMixin(viewsets.ViewSetMixin):
         view.cls = cls
         view.suffix = initkwargs.get('suffix', None)
         return csrf_exempt(view)
+
+
+class ViewSet(ViewSetMixin, viewsets.ViewSet):
+    pass
+
+class GenericViewSet(ViewSetMixin, viewsets.GenericViewSet):
+    pass
