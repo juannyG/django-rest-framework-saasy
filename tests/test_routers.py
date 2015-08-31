@@ -4,6 +4,7 @@ import simplejson
 
 from mock import patch
 from django.test import TestCase
+from django.test.utils import override_settings
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import link, action
 from rest_framework.compat import include, patterns, url
@@ -12,8 +13,6 @@ from rest_framework.response import Response
 from rest_framework_saasy import routers
 from rest_framework_saasy import viewsets as saas_viewsets
 from .models import ClientModel, TestModel
-
-urlpatterns = patterns('',)
 
 
 class BasicViewSet(saas_viewsets.ViewSet):
@@ -87,23 +86,20 @@ class NoteViewSet(saas_viewsets.ViewSet, viewsets.ModelViewSet):
     serializer_class = NoteSerializer
 
 
+class URLResolver:
+    router = routers.SimpleRouter()
+    router.register(r'notes', NoteViewSet)
+    urlpatterns = router.urls
+
+
+@override_settings(ROOT_URLCONF=URLResolver)
 class TestSaaSRouting(TestCase):
     """ViewSet test suite"""
-    urls = 'tests.test_routers'
 
     def setUp(self):
         ClientModel.objects.create(name='foo_bar-123')
         ClientModel.objects.create(name='bar')
         TestModel.objects.create(uuid='123', text='foo bar')
-        self.register()
-
-    def register(self):
-        self.router = routers.SimpleRouter()
-        self.router.register(r'notes', NoteViewSet)
-        urls = urlpatterns
-        urls += patterns('',
-                         url(r'^', include(self.router.urls)),
-                         )
 
     def test_core_fallback(self):
         expected_response = {
