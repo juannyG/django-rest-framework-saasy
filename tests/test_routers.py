@@ -80,8 +80,7 @@ class NoteSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class NoteViewSet(saas_viewsets.ViewSet, viewsets.ModelViewSet):
-    SAAS_MODULE = 'test_routers'
-
+    saas_module = 'test_routers'
     queryset = TestModel.objects.all()
     serializer_class = NoteSerializer
 

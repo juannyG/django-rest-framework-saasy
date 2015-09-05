@@ -2,12 +2,11 @@
 """DRF SaaS APIView"""
 from django.utils.decorators import classonlymethod
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics
 from rest_framework.views import APIView as BaseAPIView
 
 from rest_framework_saasy.utils import get_cls
 
-__all__ = ['APIView', 'GenericAPIView']
+__all__ = ['APIView']
 
 
 class APIView(BaseAPIView):
@@ -35,7 +34,3 @@ class APIView(BaseAPIView):
 
         view.cls = cls
         return csrf_exempt(view)
-
-
-class GenericAPIView(APIView, generics.GenericAPIView):
-    pass

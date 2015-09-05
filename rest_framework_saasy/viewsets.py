@@ -13,7 +13,7 @@ __all__ = ['ViewSetMixin', 'ViewSet', 'GenericViewSet']
 
 class ViewSetMixin(viewsets.ViewSetMixin):
     """SaaS extension of rest_framework ViewSetMixin"""
-    SAAS_MODULE = None
+    saas_module = None
 
     @classonlymethod
     def as_view(cls, actions=None, **initkwargs):

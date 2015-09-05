@@ -73,9 +73,9 @@ class ClientModel(models.Model, ClientMixin):
           └── module.py
   ```
 
-### ViewSets
+### Views, GenericViews, and ViewSets
 
-The idea is there is a core web service ViewSet, *WebService*, defined 
+The idea is there is a core web service class, *WebService*, defined 
 in **app.subpackage.module** and in **customizations.client_name.app.subpackage.module** 
 where there is also a class named *WebService*
 
@@ -87,7 +87,7 @@ from rest_framework_saasy import viewsets as saas_viewsets
 from .models import WebServiceModel
 from .serializers import WebServiceSerializer
 
-class WebService(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
+class WebService(saas_viewsets.ViewSet, viewsets.ModelViewSet):
     queryset = WebServiceModel.objects.all()
     serializer_class = WebServiceSerializer
 ```
@@ -106,11 +106,11 @@ path for the ViewSet mixed with the *saas_viewsets.ViewSetMixin*.
 What cannot be customized is the name of the class - the class name *WebService* in the
 core must be defined identically in the client custom module.
 
-#### ViewSetMixin methods
+#### SaaS module property
 
 - *saas_module* **[optional]**
 
-  By default, viewset will be routed in a similar way as in the diagram above:
+  By default, a View, GenericView, or Viewset will be routed in a similar way as in the diagram above:
   
   ```
   project
@@ -124,16 +124,14 @@ core must be defined identically in the client custom module.
           └── module.py
   ```
   
-  However, the SaaS viewset has an optional method that can be defined, *saas_module*
-  This returns the path that should be used in the client package. **It must be 
-  defined with the staticmethod decorator.** Let's slightly alter our *WebService* example above:
+  However, the SaaS views have an optional property that can be defined called *saas_module*.
+  This returns the path that should be used in the client package. Let's slightly alter 
+  our *WebService* example above:
   
   ```python
-  class WebService(saas_viewsets.ViewSetMixin, viewsets.ModelViewSet):
+  class WebService(saas_viewsets.ViewSet, viewsets.ModelViewSet):
       ...
-      @staticmethod
-      def saas_module():
-          return 'other.package.name'
+      saas_module = 'other.package.name'
   ```
   
   The expected file system package defintion for *WebService* customizations would be:
@@ -150,13 +148,16 @@ core must be defined identically in the client custom module.
           └── module.py
   ```
 
-#### ViewSet attributes
+#### Other class attributes
 
-*saas_url_kw* is a new attribute made available to the ViewSet instance. 
+*saas_url_kw* is a new attribute made available to the class instance. 
 The value of the valid identifier from the URL key word argument can be 
 accessed at any time. If no client specific route was used, *saas_url_kw*
 defaults to None.
 
+The *saas_url_kw* provides the value to use for the client ORM look up filter. 
+If the client look up succeeds, the class will have a *saas_client* attribute 
+added to it with the ORM instance. Otherwise, it too defaults to None.
 ### SaaS SimpleRouter
 
 You'll register your new SaaSy viewsets in exactly the same way Django
@@ -183,6 +184,15 @@ Client specific routes will be made available immediately:
 **Note:** If a client key word argument is provided, but the client cannot
 be retreived from the database with the given identifier, the
 plugin will simply return a 404.
+
+#### DRF SaaSy Class implementations
+In order to make integrations simpler, the import paths identically match those
+of DRF.
+
+- APIView - ```rest_framework_saasy.views```
+- GenericAPIView - ```rest_framework_saasy.generics```
+- ViewSet - ```rest_framework_saasy.viewsets```
+- GenericViewSet - ```rest_framework_saasy.viewsets```
 
 License
 =======

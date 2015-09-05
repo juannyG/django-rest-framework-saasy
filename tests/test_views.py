@@ -4,14 +4,14 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from rest_framework.response import Response
 
-from rest_framework_saasy import views as saas_views
+from rest_framework_saasy.generics import GenericAPIView
 from rest_framework_saasy import routers
 from .models import ClientModel
 
 
-class BasicView(saas_views.APIView):
+class BasicView(GenericAPIView):
     """View for tests"""
-    SAAS_MODULE = 'test_views'
+    saas_module = 'test_views'
     get_response = 'get'
     post_response = 'post'
 
