@@ -14,7 +14,7 @@ setup(
     url="https://github.com/juannyg/django-rest-framework-saasy",
     test_suite='rest_framework_saasy.runtests.runtests.main',
     install_requires=[
-        "Django==1.6.5",
+        "Django==1.11.28",
         "djangorestframework==2.3.14",
         "simplejson==3.6.0",
     ]
