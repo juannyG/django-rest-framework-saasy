@@ -1,5 +1,5 @@
 importlib==1.0.3
-Django==1.6.5
+Django==1.11.29
 coverage==3.7.1
 djangorestframework==2.3.14
 mock==1.0.1
