@@ -15,7 +15,7 @@ setup(
     test_suite='rest_framework_saasy.runtests.runtests.main',
     install_requires=[
         "Django==1.6.5",
-        "djangorestframework==2.3.14",
+        "djangorestframework==3.11.2",
         "simplejson==3.6.0",
     ]
 )
